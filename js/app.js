@@ -1,6 +1,6 @@
 class CalorieTracker {
   constructor() {
-    this._calorieLimit = 3000;
+    this._calorieLimit = 2000;
     this._totalCalories = 0;
     this._meals = [];
     this._workouts = [];
@@ -105,13 +105,66 @@ class Workout {
   }
 }
 
-const tracker = new CalorieTracker();
-const breakfast = new Meal('Breakfast', 400);
-const lunch = new Meal('Lunch', 760);
-tracker.addMeal(breakfast);
-tracker.addMeal(lunch);
-const workout = new Workout('Morning Run', 200);
-tracker.addWorkout(workout);
-console.log(tracker._meals);
-console.log(tracker._workouts);
-console.log(tracker._totalCalories);
+class App {
+  constructor() {
+    this._tracker = new CalorieTracker();
+
+    document
+      .getElementById('meal-form')
+      .addEventListener('submit', this._newMeal.bind(this));
+    document
+      .getElementById('workout-form')
+      .addEventListener('submit', this._newWorkout.bind(this));
+  }
+
+  _newMeal(e) {
+    e.preventDefault();
+
+    const mealName = document.getElementById('meal-name');
+    const mealCalories = document.getElementById('meal-calories');
+
+    // Validate Inputs
+
+    if (mealName.value === '' || mealCalories.value === '') {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const meal = new Meal(mealName.value, +mealCalories.value);
+    this._tracker.addMeal(meal);
+    mealName.value = '';
+    mealCalories.value = '';
+
+    const collapseMeal = document.getElementById('collapse-meal');
+    const bsCollapse = new bootstrap.Collapse(collapseMeal, { toggle: true });
+  }
+
+  _newWorkout(e) {
+    e.preventDefault();
+
+    const workoutType = document.getElementById('workout-name');
+    const workoutBurnedCalories = document.getElementById('workout-calories');
+
+    // Validate Inputs
+
+    if (workoutType.value === '' || workoutBurnedCalories.value === '') {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const workout = new Workout(
+      workoutType.value,
+      +workoutBurnedCalories.value
+    );
+    this._tracker.addWorkout(workout);
+    workoutType.value = '';
+    workoutBurnedCalories.value = '';
+
+    const collapseWorkout = document.getElementById('collapse-workout');
+    const bsCollapse = new bootstrap.Collapse(collapseWorkout, {
+      toggle: true,
+    });
+  }
+}
+
+const app = new App();
