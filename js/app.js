@@ -128,8 +128,7 @@ class CalorieTracker {
             class="fs-1 bg-primary text-white text-center rounded-2 px-2 px-sm-5"
           >
             ${meal.calories}
-          </div>45t6y7u8iop;[']
-          \
+          </div>
           <button class="delete btn btn-danger btn-sm mx-2">
             <i class="fa-solid fa-xmark"></i>
           </button>
@@ -207,6 +206,12 @@ class App {
       .getElementById('reset')
       .addEventListener('click', this._reset.bind(this));
     document
+      .getElementById('filter-meals')
+      .addEventListener('keyup', this._filterItems.bind(this, 'meal'));
+    document
+      .getElementById('filter-workouts')
+      .addEventListener('keyup', this._filterItems.bind(this, 'workout'));
+    document
       .getElementById('limit-form')
       .addEventListener('submit', this._setLimit.bind(this));
   }
@@ -262,6 +267,19 @@ class App {
     document.getElementById('workout-items').innerHTML = '';
     document.getElementById('filter-meals').value = '';
     document.getElementById('filter-workouts').value = '';
+  }
+
+  _filterItems(type, e) {
+    const text = e.target.value.toLowerCase();
+    document.querySelectorAll(`#${type}-items .card`).forEach((item) => {
+      const name = item.firstElementChild.firstElementChild.textContent;
+
+      if (name.toLowerCase().indexOf(text) !== -1) {
+        item.style.display = 'block';
+      } else {
+        item.style.display = 'none';
+      }
+    });
   }
 
   _setLimit(e) {
