@@ -1,8 +1,7 @@
 class CalorieTracker {
   constructor() {
     this._calorieLimit = Storage.getCalorieLimit();
-    // this.calorieLimit = Storage.getCalorieLimit();
-    this._totalCalories = 0;
+    this._totalCalories = Storage.getTotalCalories(0);
     this._meals = [];
     this._workouts = [];
     this._displayCaloriesLimit();
@@ -16,6 +15,7 @@ class CalorieTracker {
   addMeal(meal) {
     this._meals.push(meal);
     this._totalCalories += meal.calories;
+    Storage.updateTotalCalories(this._totalCalories);
     this._displayNewMeal(meal);
     this._render();
   }
@@ -25,6 +25,7 @@ class CalorieTracker {
     if (index !== -1) {
       const meal = this._meals[index];
       this._totalCalories -= meal.calories;
+      Storage.updateTotalCalories(this._totalCalories);
       this._meals.splice(index, 1);
       this._render();
     }
@@ -33,6 +34,7 @@ class CalorieTracker {
   addWorkout(workout) {
     this._workouts.push(workout);
     this._totalCalories -= workout.calories;
+    Storage.updateTotalCalories(this._totalCalories);
     this._displayNewWorkout(workout);
     this._render();
   }
@@ -42,6 +44,7 @@ class CalorieTracker {
     if (index !== -1) {
       const workout = this._workouts[index];
       this._totalCalories += workout.calories;
+      Storage.updateTotalCalories(this._totalCalories);
       this._workouts.splice(index, 1);
       this._render();
     }
@@ -191,7 +194,6 @@ class Workout {
 class Storage {
   static getCalorieLimit(defaultLimit = 2110) {
     let calorieLimit;
-    console.log(calorieLimit);
 
     if (localStorage.getItem('calorieLimit') === null) {
       calorieLimit = defaultLimit;
@@ -203,6 +205,21 @@ class Storage {
 
   static setCalorieLimit(calorieLimit) {
     localStorage.setItem('calorieLimit', calorieLimit);
+  }
+
+  static getTotalCalories(defaultCalories = 0) {
+    let calorieTotal;
+
+    if (localStorage.getItem('calorieTotal') === null) {
+      calorieTotal = defaultCalories;
+    } else {
+      calorieTotal = localStorage.getItem('calorieTotal');
+    }
+    return calorieTotal;
+  }
+
+  static updateTotalCalories(calories) {
+    localStorage.setItem('calorieTotal', calories);
   }
 }
 
